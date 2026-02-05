@@ -1,0 +1,20 @@
+---
+title: "penguin_predictions_2026"
+format: gfm
+editor: visual
+---
+
+## Approach
+
+This project leverages the penguin_predictions.csv dataset to examine classfication problems and metrics. My limited understanding of classification problems is that it could be especially problematic in certain fields (such as medical research) and this can sometimes impact the level of precision (e.g., confidence levels) researchers can apply to their data analysis. I'm looking forward to learning more.
+
+### Process:
+
+1.  Download the dataset and review the pdf article: [*Performance Metrics for Classification Problems in Machine Learning*](https://github.com/acatlin/data/blob/master/Performance%20Metrics%20for%20Classification%20problems%20in%20Machine%20Learning.pdf)
+2.  Explore dataset
+3.  Build confusion matrices manually
+4.  Complete assignment tasks
+
+### Sources:
+
+penguin_predictions: https://raw.githubusercontent.com/acatlin/data/refs/heads/master/penguin_predictions.csv
