@@ -4,17 +4,95 @@ format: gfm
 editor: visual
 ---
 
-## Approach
+## Introduction
 
-This project leverages the penguin_predictions.csv dataset to examine classfication problems and metrics. My limited understanding of classification problems is that it could be especially problematic in certain fields (such as medical research) and this can sometimes impact the level of precision (e.g., confidence levels) researchers can apply to their data analysis. I'm looking forward to learning more.
+This project leverages the penguin_predictions.csv dataset (below) to examine classification problems and metrics.
 
-### Process:
+```{r}
+library(tidyverse)
+library(knitr)
+library(caret)
 
-1.  Download the dataset and review the pdf article: [*Performance Metrics for Classification Problems in Machine Learning*](https://github.com/acatlin/data/blob/master/Performance%20Metrics%20for%20Classification%20problems%20in%20Machine%20Learning.pdf)
-2.  Explore dataset
-3.  Build confusion matrices manually
-4.  Complete assignment tasks
+penguin_predictions <- read.csv("https://raw.githubusercontent.com/acatlin/data/refs/heads/master/penguin_predictions.csv")
 
-### Sources:
+glimpse(penguin_predictions)
 
-penguin_predictions: https://raw.githubusercontent.com/acatlin/data/refs/heads/master/penguin_predictions.csv
+ggplot(data=penguin_predictions, aes(x=sex, fill=sex)) + geom_bar() +
+  labs (title = "Count of actual pengiun sexes.")
+```
+
+## Analysis
+
+### Null Error Rate
+
+The null error rate is calculated as 1 - the majority class error rate. This is important to know as in cases where there is a high class imbalance, (ie, when one outcome is signficantly high) the model can show a high percentage accuracy but still be ineffective. In this case, the null error rate is 0.58 means the data is relatively balanced.
+
+```{r}
+null_accuracy <- mean(penguin_predictions$sex == "female")
+null_error_rate <- 1 - null_accuracy
+cat("Null Error Rate is:",null_error_rate) 
+```
+### Confusion Matrices & Performance Metrics
+
+We calculate confusion matrices at three different thresholds to review changes in metrics as thresholds increase/decrease.  We will use thresholds:
+1. 0.2 (pred_0.2)
+2. 0.5  (we will use the base dataset, .pred_class)
+3. 0.8 (pred_0.8)
+
+#### 0.2 Threshold
+```{r}
+penguin_predictions <- mutate(penguin_predictions, pred_0.2=ifelse(.pred_female>0.2,"female","male") )
+
+results_0.2 <- confusionMatrix(as.factor(penguin_predictions$pred_0.2), as.factor(penguin_predictions$sex), positive= "female")
+
+results_0.2$table
+
+#Metrics
+results_0.2$overall["Accuracy"] #TP+TN / Total
+results_0.2$byClass["Precision"] #TP / (TP+FP)
+results_0.2$byClass["Recall"]  #TP / (TP + FN)
+results_0.2$byClass["F1"]
+```
+
+#### 0.5 Threshold
+```{r}
+
+results_0.5 <- confusionMatrix(as.factor(penguin_predictions$.pred_class), as.factor(penguin_predictions$sex), positive= "female")
+
+results_0.5$table
+
+#Metrics
+results_0.5$overall["Accuracy"] #TP+TN / Total
+results_0.5$byClass["Precision"] #TP / (TP+FP)
+results_0.5$byClass["Recall"]  #TP / (TP + FN)
+results_0.5$byClass["F1"]
+```
+
+
+#### 0.8 Threshold
+
+```{r}
+penguin_predictions <- mutate(penguin_predictions, pred_0.8=ifelse(.pred_female>0.8,"female","male") )
+
+results_0.8 <- confusionMatrix(as.factor(penguin_predictions$pred_0.8), as.factor(penguin_predictions$sex), positive= "female")
+
+results_0.8$table
+
+#Metrics
+results_0.8$overall["Accuracy"] #TP+TN / Total
+results_0.8$byClass["Precision"] #TP / (TP+FP)
+results_0.8$byClass["Recall"]  #TP / (TP + FN)
+results_0.8$byClass["F1"]
+```
+## Discussion and threshold Use Cases
+
+In the above analysis, we analyzed various confusion matrices and metrics at varying thresholds.  In this example, where the classes are fairly balanced, the resulting metrics (using F1 as a harmonic mean between precision and recall) increase subtly as the threshold increases.  
+
+In practical application, there may be cases where a lower threshold (more positives predicted) would be preferred.  For example, in cases of disease detection, we would be more interested in diagnosing everyone who has the disease, which could lead to more false positives.  
+
+On the other hand, in spam detection, where spam is assigned a positive value, we would not want to mark any important emails as spam.  Therefore, we would want to minimize false positives so that we only put spam emails directly into trash.  
+
+## Sources:
+Google DeepMind. (2025). Gemini 3 Flash \[Large language model\]. https://gemini.google.com. Accessed Feb 7, 2026 (chat link: https://gemini.google.com/share/76406da30089)
+
+Sunasra, Mohammed.  (Nov 11, 2017).  "Performance Metrics for Classification problems in Machine Learning". https://github.com/acatlin/data/blob/master/Performance%20Metrics%20for%20Classification%20problems%20in%20Machine%20Learning.pdf. 
