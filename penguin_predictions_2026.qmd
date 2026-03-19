@@ -4,7 +4,7 @@ format: gfm
 editor: visual
 ---
 
-## Introduction - v2.
+## Introduction - v3
 
 This project leverages the penguin_predictions.csv dataset (below) to examine classification problems and metrics.
 
@@ -21,7 +21,7 @@ ggplot(data=penguin_predictions, aes(x=sex, fill=sex)) + geom_bar() +
   labs (title = "Count of actual pengiun sexes.")
 ```
 
-## Analysis
+## Analysis - v3
 
 ### Null Error Rate
 
@@ -35,7 +35,7 @@ cat("Null Error Rate is:",null_error_rate)
 
 ### Confusion Matrices & Performance Metrics
 
-We calculate confusion matrices at three different thresholds to review changes in metrics as thresholds increase/decrease. We will use thresholds: 1. 0.2 (pred_0.2) 2. 0.5 (we will use the base dataset, .pred_class) 3. 0.8 (pred_0.8)
+We calculate confusion matrices at three different thresholds to review changes in metrics as thresholds increase/decrease. We will use thresholds: 1. 0.2 (pred_0.2) 2. 0.5 (we will use the base dataset, .pred_class) 3. 0.8 (pred_0.8). xyz
 
 #### 0.2 Threshold
 
